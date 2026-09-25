@@ -147,3 +147,7 @@ Two rules that keep the device healthy:
 1. **Text, not images, for anything that changes often.** A panel is about 0.5 KB; an image is about 115 KB.
 2. **Saved panels are flash writes: save only when the content changes.** The volatile channel never writes
    the flash.
+
+**A saved panel does not appear at once.** It joins the normal rotation and waits its turn, so if the device is
+showing the clock you may not see it for a while. A volatile panel jumps to the front straight away: use
+`--volatile` when you want to check that a panel looks right.

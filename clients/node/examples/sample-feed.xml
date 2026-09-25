@@ -2,7 +2,7 @@
 <!-- A synthetic RSS 2.0 feed to try news-rss.mjs without the network. Every headline is invented. -->
 <rss version="2.0">
   <channel>
-    <title>Sample News</title>
+    <title>News</title>
     <link>https://news.example.invalid/</link>
     <description>Invented headlines for the SmallTV examples</description>
     <item>
