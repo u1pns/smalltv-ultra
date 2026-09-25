@@ -6,7 +6,7 @@
 ## Why there is a bridge image
 
 The factory firmware only accepts images that fit in the space it reserves for an update. The application
-firmware does not fit there. The **bridge** (`smalltv-rescue-0.1.2.bin`, 337 984 bytes, in
+firmware does not fit there. The **bridge** (`smalltv-ultra-jailbreak-v0.1.2.bin`, 337 984 bytes, in
 [`../firmware/jailbreak/`](../firmware/jailbreak/)) is a small image that the factory firmware does accept. Once it
 is running, it brings up its own Wi-Fi access point, a web page and an over-the-air updater without that size limit.
 From the bridge you install the real application.
@@ -29,20 +29,22 @@ upload it.
 1. **Find the device's address.** It gets its IP address from your router (DHCP). Look it up in your router's
    client list. Do not reuse an address from another day: it can change.
 2. **Open the factory update page** at `http://<device-address>/update`.
-3. **Upload the bridge** (`smalltv-rescue-0.1.2.bin`) in the *firmware* field of that form — not the filesystem
+3. **Upload the bridge** (`smalltv-ultra-jailbreak-v0.1.2.bin`) in the *firmware* field of that form — not the filesystem
    field. It takes a few seconds and the device restarts.
 
    From the command line, the equivalent is:
 
    ```sh
-   curl -F "firmware=@smalltv-rescue-0.1.2.bin" "http://<device-address>/update"
+   curl -F "firmware=@smalltv-ultra-jailbreak-v0.1.2.bin" "http://<device-address>/update"
    ```
 4. **Wait for the bridge's access point.** After the restart a new Wi-Fi network appears:
    `SmallTV-Setup-<chip-id>`. The screen shows a black status page with the version, the access point name and
    its address. If the screen stays black but the access point appears, the bridge is running: the display is not
    needed for the web page or the updater.
 5. **Connect to the access point** with password `12345678` and open `http://192.168.4.1/`. Log in
-   as user `admin` with password `kapifo`.
+   as user `admin` with password `kapifo` (all lowercase: phones tend to capitalise the first letter). This page
+   is in Spanish because the bridge is frozen; the application you install next has its own login, `admin` /
+   `12345678`.
 6. **Optionally join your home Wi-Fi** from that page. The device then serves the same page at the address your
    router gives it, and keeps its own access point as well.
 
