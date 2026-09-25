@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A synthetic RSS 2.0 feed to try news-rss.mjs without the network. Every headline is invented. -->
+<rss version="2.0">
+  <channel>
+    <title>Sample News</title>
+    <link>https://news.example.invalid/</link>
+    <description>Invented headlines for the SmallTV examples</description>
+    <item>
+      <title>City opens new riverside bike lane</title>
+      <link>https://news.example.invalid/1</link>
+    </item>
+    <item>
+      <title><![CDATA[Local library extends weekend hours]]></title>
+      <link>https://news.example.invalid/2</link>
+    </item>
+    <item>
+      <title>Sunny week ahead, rain back on Sunday</title>
+      <link>https://news.example.invalid/3</link>
+    </item>
+    <item>
+      <title>Makers&apos; fair returns this Saturday</title>
+      <link>https://news.example.invalid/4</link>
+    </item>
+    <item>
+      <title>Tiny satellites &amp; big science at school</title>
+      <link>https://news.example.invalid/5</link>
+    </item>
+    <item>
+      <title>Night trains: two new routes announced</title>
+      <link>https://news.example.invalid/6</link>
+    </item>
+    <item>
+      <title>Home team wins 2-1 in the last minute</title>
+      <link>https://news.example.invalid/7</link>
+    </item>
+    <item>
+      <title>Recipe of the week: tomato bread</title>
+      <link>https://news.example.invalid/8</link>
+    </item>
+  </channel>
+</rss>

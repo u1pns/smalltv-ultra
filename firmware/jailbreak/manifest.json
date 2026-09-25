@@ -1,0 +1,17 @@
+{
+  "name": "SmallTV Ultra jailbreak (rescue bridge)",
+  "version": "0.1.2",
+  "role": "jailbreak",
+  "files": [
+    {
+      "file": "smalltv-ultra-jailbreak-v0.1.2.bin",
+      "bytes": 337984,
+      "md5": "5db48ee5836ee273a84dcfe2e9de29bd",
+      "sha256": "36ed4e4a42a8291a52039d9a5252603a0fbb904132f7feab4d6411174f31c102"
+    }
+  ],
+  "source_commit": "2fef396",
+  "source_tag": "smalltv-bridge-v0.1.2",
+  "frozen": true,
+  "built": "2026-09-18"
+}

@@ -1,0 +1,25 @@
+{
+  "name": "SmallTV Ultra firmware",
+  "version": "0.6.5",
+  "core_version": "0.5.13",
+  "role": "app",
+  "files": [
+    {
+      "file": "smalltv-ultra-v0.6.5.bin",
+      "bytes": 584448,
+      "md5": "50768005bf2dd6bdb9ca00d2adb6fc87",
+      "sha256": "db68765ba52c28408f23237b7fe873c7a57c6ed6ce4306eb7f8e0f07fca8cdb7"
+    },
+    {
+      "file": "smalltv-ultra-resources.res",
+      "bytes": 154804,
+      "md5": "ddc571752f9817a94fcb619b5c9d23dd",
+      "sha256": "d53eb1d000d1d94f532a214217dd965c13b30e154467cc54f341bd836204b0f2",
+      "resources": 38,
+      "min_firmware": "0.5.6"
+    }
+  ],
+  "source_commit": "aaf0932",
+  "source_tag": "smalltv-v0.6.5",
+  "built": "2026-09-25"
+}
