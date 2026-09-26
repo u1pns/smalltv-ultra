@@ -73,7 +73,7 @@ people get stuck:
 |---|---|---|---|
 | Factory firmware | — | — (it joins your Wi-Fi) | none |
 | **A. Jailbreak** (temporary) | `smalltv-ultra-jailbreak-v0.1.2.bin` | `SmallTV-Setup-<chip-id>`, password `12345678` | user `admin`, password **`kapifo`** |
-| **B. Application** (final) | `smalltv-ultra-v0.6.5.bin` | `SmallTV-Setup-<chip-id>`, password `12345678` | user `admin`, password **`12345678`** |
+| **B. Application** (final) | `smalltv-ultra-v0.6.7.bin` | `SmallTV-Setup-<chip-id>`, password `12345678` | user `admin`, password **`12345678`** |
 
 All passwords are lowercase. **Phones capitalise the first letter on their own** (`Admin`, `Kapifo`): if the login
 is refused, check that first. Before uploading any file, compare its MD5 with the README of its folder in
@@ -100,8 +100,8 @@ Wi-Fi, so after the restart **nothing answers at the old address**. To reach it 
 
 **B. Application** → full guide: [docs/02-install-firmware.md](docs/02-install-firmware.md)
 
-6. On the same page (still the jailbreak, still `kapifo`), upload `smalltv-ultra-v0.6.5.bin` from
-   [`firmware/v0.6.5/`](firmware/v0.6.5/) and type its MD5 when asked. The jailbreak page is **in Spanish**, because that
+6. On the same page (still the jailbreak, still `kapifo`), upload `smalltv-ultra-v0.6.7.bin` from
+   [`firmware/v0.6.7/`](firmware/v0.6.7/) and type its MD5 when asked. The jailbreak page is **in Spanish**, because that
    image is frozen and never rebuilt: open *Actualizar el firmware*, choose the file, fill *MD5 del archivo* and press
    *Verificar y actualizar*; a good upload answers *Verificado; reiniciando*. The device comes back in about 15 seconds, keeping your Wi-Fi.
 7. **From now on the login is `admin` / `12345678`.** If the browser keeps offering `kapifo`, open the page in a
@@ -110,7 +110,10 @@ Wi-Fi, so after the restart **nothing answers at the old address**. To reach it 
    says the storage is not formatted (usual on a unit that comes from the factory firmware), then upload `smalltv-ultra-resources.res` from the same
    folder through *Advanced → Update the firmware*. `GET /api/app/health` shows `"missing": []` when everything is
    there; the list refreshes as the screens rotate, so give it about a minute.
-9. Choose your city, time zone and screens. Later updates are just step 6 again, from the application's own page:
+9. **Optional: change the language.** The device speaks English. For Spanish, French or Italian, upload one
+   `smalltv-ultra-lang-<code>.res` from the same folder, the same way as the resource pack. Details:
+   [docs/03-features.md](docs/03-features.md#languages).
+10. Choose your city, time zone and screens. Later updates are just step 6 again, from the application's own page:
    they keep your resources and settings.
 
 ## Documentation

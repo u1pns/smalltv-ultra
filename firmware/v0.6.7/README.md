@@ -1,19 +1,35 @@
-# Firmware v0.6.5
+# Firmware v0.6.7
 
 Install it from the jailbreak page (or from any earlier version of this firmware) as described in
-[docs/02-install-firmware.md](../../docs/02-install-firmware.md), then upload the resource pack.
+[docs/02-install-firmware.md](../../docs/02-install-firmware.md), then upload the resource pack and, if you want the
+device in another language, one language pack.
 
 | File | Size | MD5 | SHA-256 |
 |---|---|---|---|
-| `smalltv-ultra-v0.6.5.bin` — the firmware | 584 448 B | `50768005bf2dd6bdb9ca00d2adb6fc87` | `db68765b…8cdb7` |
+| `smalltv-ultra-v0.6.7.bin` — the firmware | 613 344 B | `91fc92ee17495ebd8197559374397fc4` | `13db8e92…165a9ff5` |
 | `smalltv-ultra-resources.res` — fonts and icons (38 files) | 154 804 B | `ddc571752f9817a94fcb619b5c9d23dd` | `d53eb1d0…04b0f2` |
+| `smalltv-ultra-lang-es.res` — Spanish (optional) | 20 960 B | `ff58aeb63a5e2626491697d2339651d8` | `be5a03db…6a2cd6` |
+| `smalltv-ultra-lang-fr.res` — French (optional) | 21 769 B | `241424211739c02319cb35b34e8d6037` | `ecb6f56c…a05798` |
+| `smalltv-ultra-lang-it.res` — Italian (optional) | 21 174 B | `b5d3b6d9bfb898550d53d3c01b36f606` | `86b59df0…d875228` |
 
 Full checksums in [`manifest.json`](manifest.json). The resource pack is the same file as in v0.6.0: if you already
-uploaded it, you do not need to upload it again.
+uploaded it, you do not need to upload it again. The language packs need firmware 0.6.6 or later (0.6.7 is the
+first published one); an older firmware stores the file but ignores it.
 
 **What it includes:** clock, current weather and 3-day forecast (Open-Meteo), photo album, screens sent from your
 PC (panels), web settings page, over-the-air updates and a rescue mode that keeps the device updatable. Details
 and screenshots: [docs/03-features.md](../../docs/03-features.md).
+
+**New in v0.6.7: languages.** The firmware speaks English out of the box. Upload **one** language pack
+(`smalltv-ultra-lang-<code>.res`) and the screens and the everyday part of the web page switch to that language, with
+no restart. Upload it from *Advanced → Update the firmware* (the same field that takes `.bin` and the resource pack)
+or from *Advanced → Internal storage*. The *Advanced* section, the health card and rescue mode stay in English. The
+last pack you upload replaces the previous one; to go back to English, remove the pack in *Advanced → Internal
+storage* (the file `l-<code>.jpl`). When a pack is activated for the first time it sets its usual date format and
+12/24-hour clock once; after that, whatever you change on the web page wins. Published languages: Spanish, French
+and Italian. The French and Italian translations are **machine-assisted; corrections are welcome**.
+`/api/app/health` gains a `language` block. Details: [docs/03-features.md](../../docs/03-features.md#languages).
+(v0.6.6 was an internal step and was not published; its changes are included here.)
 
 **New in v0.6.5:** rescue mode now leaves on its own. If the device went into rescue because it had no Wi-Fi
 when it started, it goes back to the application after 2 minutes connected. For any other cause, after 10 minutes
@@ -37,7 +53,7 @@ carousel turns, if that is longer) before the carousel resumes its normal pace. 
 
 **API:** no route changed or disappeared since v0.6.0. Added: `GET /api/app/hand`, the test command
 `POST /api/app/command?name=hand`, the settings `hand`,
-`hand_action` and `flip`, and the `timeSource` field in `/api/app/health`. See
+`hand_action` and `flip`, the `timeSource` field (v0.6.2) and the `language` block (v0.6.7) in `/api/app/health`. See
 [docs/api/API.md](../../docs/api/API.md).
 
 **Without the resource pack** the device still works, with a small built-in 5×7 font and no icons. Upload the
@@ -46,4 +62,4 @@ carousel turns, if that is longer) before the carousel resumes its normal pace. 
 **Web credentials:** user `admin`, password `12345678` — the same on every unit. Keep the device on your local
 network; do not expose it to the internet.
 
-**Language:** screens and web page in English.
+**Language:** English by default; Spanish, French and Italian with a language pack (see above).

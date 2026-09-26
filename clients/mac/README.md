@@ -50,7 +50,7 @@ Every script prints its full help with `-h`. `smalltv-common.sh` holds the share
 sh status.sh
 
 # Firmware update. DO NOT cut the power until the device is back.
-sh update-firmware.sh smalltv-ultra-v0.6.5.bin
+sh update-firmware.sh smalltv-ultra-v0.6.7.bin
 
 # Fonts and icons in one go (skips what is already there; run it again if it stops halfway)
 sh upload-resources.sh smalltv-resources.res

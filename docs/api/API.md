@@ -193,6 +193,16 @@ curl -s -u "$A" "$DEV/api/app/health" | python3 -m json.tool
 - `missing`: resources a screen asked for that are not in the storage.
 - `stackFree`: bytes of the main loop's stack (4 KB in total) that have never been used since boot. It is a
   high-water mark, so it can only go down. If it gets close to zero, the device is close to a stack overflow.
+- `language` (v0.6.7; firmware 0.6.6 already reported it): the language pack in use.
+  `{"pack":"l-es.jpl","code":"es","state":"ok","schema":1,"packSchema":1,"fallback":0,"unknown":0}`
+  - `pack`: the file in the storage (empty if there is none, or more than one); `code`: its language code.
+  - `state`: `ok` (pack active), `none` (no pack, or storage not mounted), `several` (two or more packs; English),
+    `corrupt` (header, sections or checksum broken; English) or `font` (the pack's font is unusable; English).
+  - `schema`: the text catalogue version this firmware expects; `packSchema`: the one the pack was built for.
+  - `fallback`: texts shown in English because the pack does not provide a usable translation (all of them when
+    `state` is not `ok`); `unknown`: keys in
+    the pack this firmware does not know. A pack from a different firmware version still works: matching texts are
+    translated, the rest stay in English.
 
 ### 4.4 Change brightness or the rotating screens
 

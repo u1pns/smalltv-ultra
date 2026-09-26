@@ -1,9 +1,9 @@
 # 3. Features
 
-Everything below applies to the application firmware (v0.6.5). The bridge image only offers the access point, the
+Everything below applies to the application firmware (v0.6.7). The bridge image only offers the access point, the
 web page and the updater.
 
-Screen texts and the web page are in English.
+Screen texts and the web page are in English, unless you install a [language pack](#languages).
 
 ## Screens
 
@@ -119,6 +119,34 @@ delete files from *Advanced → Internal storage*; system files (fonts, icons, p
 
 The firmware never depends on the storage to boot or to update: with the storage empty, corrupted or unformatted,
 the clock still works with the built-in typeface, and rescue mode does not use the storage at all.
+
+## Languages
+
+The firmware speaks **English**, built in. Any other language is a small **language pack**,
+`smalltv-ultra-lang-<code>.res`, published next to each firmware release. Available: Spanish (`es`), French (`fr`)
+and Italian (`it`). The French and Italian translations are machine-assisted; corrections from native speakers are
+welcome (open an issue with the text you would change).
+
+- **Install:** upload one pack from *Advanced → Update the firmware* (the same field that takes `.bin` and the
+  resource pack) or from *Advanced → Internal storage → File to upload*. The browser unpacks it, uploads the single
+  file inside (`l-<code>.jpl`) and tells you which language was installed. No restart is needed.
+- **What gets translated:** the screens, and the everyday part of the web page (brightness, screens, album, time,
+  weather, hand detection). *Advanced*, the health card, the upload box and rescue mode stay in English on purpose,
+  so the recovery path never depends on a file.
+- **One language at a time:** the last pack you upload replaces the previous one.
+- **Date and time format:** the first time a pack is activated, it sets its usual date format and 12/24-hour clock
+  once. After that, whatever you change on the web page wins; uploading the same pack again does not reapply it.
+- **Back to English:** in *Advanced → Internal storage*, press **Remove the language pack (back to English)** (it deletes the file `l-<code>.jpl`).
+- **Safe by design:** with no pack, a damaged pack or two packs at once, the device speaks English; if a single text
+  does not fit or is missing, only that text stays in English. The pack is checked before it is used.
+- **Firmware:** packs need firmware 0.6.6 or later (0.6.7 is the first published); an older firmware stores the file
+  and ignores it. The weather API answers in English whatever the pack.
+- **Status:** `GET /api/app/health` shows the active pack in its `language` block
+  ([api/API.md](api/API.md#43-monitor-the-device)).
+
+Want another language? Open an issue asking for it, or offering to translate: the list of texts is short (the
+screens plus the six everyday cards of the web page), and each screen text has a size limit, so the maintainer
+builds the pack and sends you a picture of every screen to check.
 
 ## Finding the device on the network
 

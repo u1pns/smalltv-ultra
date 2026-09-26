@@ -3,12 +3,13 @@
 Prerequisite: the device is running the bridge ([01-jailbreak.md](01-jailbreak.md)), or an earlier version of
 this application.
 
-A release folder in [`../firmware/`](../firmware/) (currently [`v0.6.5`](../firmware/v0.6.5/)) contains:
+A release folder in [`../firmware/`](../firmware/) (currently [`v0.6.7`](../firmware/v0.6.7/)) contains:
 
 | File | What it is |
 |---|---|
 | the application `.bin` | the firmware: clock, weather, album, panels, with its own rescue core inside |
 | the `.res` resource pack | fonts and icons, uploaded into the device's internal storage |
+| `smalltv-ultra-lang-<code>.res` (optional) | a language pack: Spanish, French or Italian instead of English |
 | `README.md` / `manifest.json` | exact file names, sizes and MD5 checksums |
 
 Always compare the MD5 of what you downloaded with the one in the release README before uploading.
@@ -51,6 +52,12 @@ Without the resource pack the device still works, but draws with a small built-i
 
 To check: `GET /api/app/health` (see [api/API.md](api/API.md)) lists missing resources in `missing`; after a complete
 upload it is an empty list.
+
+## Step 4 (optional) — Upload a language pack
+
+The device speaks English. To use Spanish, French or Italian, upload **one** `smalltv-ultra-lang-<code>.res` from
+the release folder, in the same field as the resource pack (or from *Advanced → Internal storage*). The page tells
+you which language was installed. See [03-features.md](03-features.md#languages).
 
 ## Updating later
 

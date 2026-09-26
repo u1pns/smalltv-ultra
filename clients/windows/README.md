@@ -58,7 +58,7 @@ you do not run it.
 .\status.ps1
 
 # Firmware update. DO NOT cut the power until the device is back.
-.\update-firmware.ps1 -File .\smalltv-ultra-v0.6.5.bin
+.\update-firmware.ps1 -File .\smalltv-ultra-v0.6.7.bin
 
 # Fonts and icons in one go (skips what is already there; run it again if it stops halfway)
 .\upload-resources.ps1 -Path .\smalltv-resources.res
