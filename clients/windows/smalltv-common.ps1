@@ -6,6 +6,9 @@
 #   -Address HOST        device address, e.g. 10.0.0.42 or smalltv.local (a ":port" suffix is allowed)
 #   $env:SMALLTV_HOST    same, from the environment (-Address wins)
 #                        With neither, the scripts find the device on the network (UDP discovery, below).
+#   $env:SMALLTV_NAME    with discovery, use the device called this way: the name set in its web page (firmware
+#                        0.6.8+) or its host name smalltv-xxxxxx; case does not matter. Two devices with the same
+#                        name are an error, never "the first one". In rescue mode a device answers without its name.
 #   $env:SMALLTV_USER    web user     (default: admin)
 #   $env:SMALLTV_PASSWORD web password (default: 12345678, the same on every unit)
 #
@@ -71,7 +74,8 @@ function Find-SmallTV([double]$WaitSeconds = 0) {
     $reply = [int](Get-DiscoverySetting 'SMALLTV_DISCOVERY_REPLY_PORT' 7779)
     if ($WaitSeconds -le 0) { $WaitSeconds = Get-DiscoverySetting 'SMALLTV_DISCOVERY_WAIT' 2 }
     $targets = if ($env:SMALLTV_DISCOVERY_ADDR) { $env:SMALLTV_DISCOVERY_ADDR -split '\s*,\s*' | Where-Object { $_ } } else { Get-BroadcastAddresses }
-    $pattern = '\[(?:HERE|AQUI)\]\s+(\S+)\s+mac=(\S+)\s+ip=([0-9.]+)\s+v=(\S+)\s+(?:mode|modo)=(\S+)'
+    # Firmware 0.6.8+ may end the line with " name=<label>" (only printable ASCII is kept; may contain spaces).
+    $pattern = '\[(?:HERE|AQUI)\]\s+(\S+)\s+mac=(\S+)\s+ip=([0-9.]+)\s+v=(\S+)\s+(?:mode|modo)=(\S+)(?:[ \t]+name=([ -~]+))?'
     $udp = New-Object System.Net.Sockets.UdpClient
     try {
         # Shared port: other tools may be listening for the same answers.
@@ -94,7 +98,8 @@ function Find-SmallTV([double]$WaitSeconds = 0) {
             if ($text -match $pattern) {
                 $mode = if ($Matches[5] -eq 'rescate') { 'rescue' } else { $Matches[5] }
                 $mac = $Matches[2].ToLowerInvariant()
-                $seen[$mac] = [pscustomobject]@{ IP = $Matches[3]; Name = $Matches[1]; MAC = $mac; Version = $Matches[4]; Mode = $mode }
+                $label = if ($Matches.ContainsKey(6)) { $Matches[6].Trim() } else { '' }
+                $seen[$mac] = [pscustomobject]@{ IP = $Matches[3]; Name = $Matches[1]; MAC = $mac; Version = $Matches[4]; Mode = $mode; Label = $label }
             }
         }
         return @($seen.Values)
@@ -105,24 +110,39 @@ function Find-SmallTV([double]$WaitSeconds = 0) {
 }
 
 function Format-SmallTVDevice($d) {
+    if ($d.Label) { return ('{0,-16} {1,-16} {2,-18} v{3,-8} {4,-6}  "{5}"' -f $d.IP, $d.Name, $d.MAC, $d.Version, $d.Mode, $d.Label) }
     return ('{0,-16} {1,-16} {2,-18} v{3,-8} {4}' -f $d.IP, $d.Name, $d.MAC, $d.Version, $d.Mode)
+}
+
+# The devices called $Wanted: their label or their host name (smalltv-xxxxxx), ignoring case. '' matches none.
+function Select-SmallTVByName($Found, [string]$Wanted) {
+    $w = $Wanted.Trim()
+    if (-not $w) { return @() }
+    return @($Found | Where-Object { $_.Label -ieq $w -or $_.Name -ieq $w })
 }
 
 function Initialize-SmallTV([string]$Address) {
     if (-not $Address) { $Address = $env:SMALLTV_HOST }
     if (-not $Address) {
-        $found = @(Find-SmallTV)
+        $all = @(Find-SmallTV)
+        $wanted = if ($env:SMALLTV_NAME) { $env:SMALLTV_NAME } else { '' }
+        $found = if ($wanted) { @(Select-SmallTVByName $all $wanted) } else { $all }
         if ($found.Count -eq 1) {
             $d = $found[0]
-            [Console]::Error.WriteLine("found $($d.Name) at $($d.IP) (firmware $($d.Version), $($d.Mode) mode)")
+            $who = if ($d.Label) { "`"$($d.Label)`" ($($d.Name))" } else { $d.Name }
+            [Console]::Error.WriteLine("found $who at $($d.IP) (firmware $($d.Version), $($d.Mode) mode)")
             $Address = $d.IP
+        } elseif ($found.Count -eq 0 -and $wanted -and $all.Count -gt 0) {
+            $list = ($all | ForEach-Object { Format-SmallTVDevice $_ }) -join "`n"
+            throw "no device is called `"$wanted`" (a device in rescue mode answers without its name). These answered:`n$list"
         } elseif ($found.Count -eq 0) {
             throw ('no device answered the discovery. It may be off, on another network, or running firmware without ' +
                 'discovery (older than 0.5.23); guest networks often block broadcasts. Pass the address with ' +
                 '-Address HOST or $env:SMALLTV_HOST (the Status screen of the device shows it).')
         } else {
             $list = ($found | ForEach-Object { Format-SmallTVDevice $_ }) -join "`n"
-            throw "several devices answered; choose one with -Address HOST (or `$env:SMALLTV_HOST):`n$list"
+            $what = if ($wanted) { "several devices are called `"$wanted`"" } else { 'several devices answered' }
+            throw "$what; choose one with -Address HOST (or `$env:SMALLTV_HOST):`n$list"
         }
     }
     $Address = $Address -replace '^http://', '' -replace '/$', ''

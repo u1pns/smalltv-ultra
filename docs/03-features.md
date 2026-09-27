@@ -1,6 +1,6 @@
 # 3. Features
 
-Everything below applies to the application firmware (v0.6.7). The bridge image only offers the access point, the
+Everything below applies to the application firmware (v0.6.10). The bridge image only offers the access point, the
 web page and the updater.
 
 Screen texts and the web page are in English, unless you install a [language pack](#languages).
@@ -31,7 +31,14 @@ Open `http://<device-address>/` and log in with `admin` / `12345678`.
 
 Everyday settings are at the top; the rest is folded under *Advanced*:
 
-- **Screen brightness** and **Dim the screen at night** (start hour, end hour, night brightness).
+- **Device name**: the name the device announces on the network (see [below](#finding-the-device-on-the-network)).
+- **Language**: which language pack is in use, and a button to install another one (see [Languages](#languages)).
+- **Screen brightness**: a slider from 0 (off) to 100. It follows the eye, not a straight line: the low end moves in
+  very small steps (1 is the dimmest the backlight can go), so the device can be really dim in a dark room.
+- **Night mode**: dim the screen at night (start hour, end hour, night brightness, same scale as above) and,
+  optionally, **show only the clock at night, in dim grey**: during the night hours the screen stays on the clock and
+  shows just the time. A hand gesture can still change the screen, and panel alerts are always shown (they can be an
+  alarm); both go back to the clock when their turn ends.
 - **Which screens are shown**, and how many seconds each one stays.
 - **Time and date**: time zone, 12/24-hour format, date format, colon blink.
 - **The weather**: find your city by name (or type latitude and longitude), Celsius or Fahrenheit.
@@ -127,11 +134,11 @@ The firmware speaks **English**, built in. Any other language is a small **langu
 and Italian (`it`). The French and Italian translations are machine-assisted; corrections from native speakers are
 welcome (open an issue with the text you would change).
 
-- **Install:** upload one pack from *Advanced → Update the firmware* (the same field that takes `.bin` and the
+- **Install:** from the **Language** card (v0.6.10), or upload one pack from *Advanced → Update the firmware* (the same field that takes `.bin` and the
   resource pack) or from *Advanced → Internal storage → File to upload*. The browser unpacks it, uploads the single
   file inside (`l-<code>.jpl`) and tells you which language was installed. No restart is needed.
-- **What gets translated:** the screens, and the everyday part of the web page (brightness, screens, album, time,
-  weather, hand detection). *Advanced*, the health card, the upload box and rescue mode stay in English on purpose,
+- **What gets translated:** the screens, and the everyday part of the web page (name, language, brightness, night
+  mode, screens, album, time, weather, hand detection). *Advanced*, the health card, the upload box and rescue mode stay in English on purpose,
   so the recovery path never depends on a file.
 - **One language at a time:** the last pack you upload replaces the previous one.
 - **Date and time format:** the first time a pack is activated, it sets its usual date format and 12/24-hour clock
@@ -140,12 +147,13 @@ welcome (open an issue with the text you would change).
 - **Safe by design:** with no pack, a damaged pack or two packs at once, the device speaks English; if a single text
   does not fit or is missing, only that text stays in English. The pack is checked before it is used.
 - **Firmware:** packs need firmware 0.6.6 or later (0.6.7 is the first published); an older firmware stores the file
-  and ignores it. The weather API answers in English whatever the pack.
+  and ignores it. **After updating the firmware, upload your language pack again from the same release**: each release
+  ships the packs with the texts of its new cards, and an older pack leaves those cards in English. The weather API answers in English whatever the pack.
 - **Status:** `GET /api/app/health` shows the active pack in its `language` block
   ([api/API.md](api/API.md#43-monitor-the-device)).
 
 Want another language? Open an issue asking for it, or offering to translate: the list of texts is short (the
-screens plus the six everyday cards of the web page), and each screen text has a size limit, so the maintainer
+screens plus the everyday cards of the web page), and each screen text has a size limit, so the maintainer
 builds the pack and sends you a picture of every screen to check.
 
 ## Finding the device on the network
@@ -155,9 +163,11 @@ The device's IP address comes from your router and can change. Ways to find it:
 - **UDP discovery**: send any UDP datagram to port **7778** (broadcast); the device answers by broadcast on port
   **7779** with a line containing its name, MAC, IP address, firmware version and current mode. It answers in
   rescue mode too. The line looks like
-  `M 21:43:07 [HERE] smalltv-a1b2c3 mac=aa:bb:cc:dd:ee:ff ip=10.0.0.42 v=0.6.4 mode=app`; the mode is `app` or
-  `rescue`. Firmware 0.6.3 and older answer with `[AQUI] … modo=app` (mode `app` or `rescate`), and the clients
-  accept both forms. Every client in
+  `M 21:43:07 [HERE] smalltv-a1b2c3 mac=aa:bb:cc:dd:ee:ff ip=10.0.0.42 v=0.6.8 mode=app name=Kitchen`; the mode is
+  `app` or `rescue`. The `name=` at the end is the name you give the device in its web page (*Device name*, firmware
+  0.6.8+): it appears only in app mode and only if you set one. Firmware 0.6.3 and older answer with
+  `[AQUI] … modo=app` (mode `app` or `rescate`), and the clients accept every form. With several devices at home,
+  the clients pick one by its name (`--name Kitchen`). Every client in
   [`clients/`](../clients/) does this for you when you do not give it an address (`discover.sh`, `discover.ps1`,
   `discover.mjs`).
 - **Hostname**: it registers with your router's DHCP as `smalltv-<chip-id>`. There is no mDNS (`.local`).

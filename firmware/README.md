@@ -11,8 +11,8 @@ firmware/
 │   ├── smalltv-ultra-jailbreak-v0.1.2.bin       the jailbreak (rescue bridge) image
 │   ├── manifest.json                            size and checksums
 │   └── README.md
-└── v0.6.7/                                      the latest release
-    ├── smalltv-ultra-v0.6.7.bin                 the application firmware
+└── v0.6.10/                                     the latest release
+    ├── smalltv-ultra-v0.6.10.bin                the application firmware
     ├── smalltv-ultra-resources.res              fonts and icons for the screens
     ├── smalltv-ultra-lang-{es,fr,it}.res        optional language packs
     ├── manifest.json                            sizes and checksums
@@ -22,7 +22,7 @@ firmware/
 | File | What it is | When you upload it | Where you upload it |
 |---|---|---|---|
 | `smalltv-ultra-jailbreak-v0.1.2.bin` | A small image whose only job is to get past the factory firmware. It opens its own Wi-Fi access point and a web page to install the next image. It does not show the clock. | **Once**, on a device that still runs the original GeekMagic firmware | The **factory** update page, `http://<device-address>/update` |
-| `smalltv-ultra-v0.6.7.bin` | The application: clock, weather, forecast, album, panels, web settings, and the rescue core that keeps the device updatable | Right after the jailbreak, and again for every future update | The **jailbreak** page, or the application's own page (*Advanced → Update the firmware*) |
+| `smalltv-ultra-v0.6.10.bin` | The application: clock, weather, forecast, album, panels, web settings, and the rescue core that keeps the device updatable | Right after the jailbreak, and again for every future update | The **jailbreak** page, or the application's own page (*Advanced → Update the firmware*) |
 | `smalltv-ultra-resources.res` | The resource pack: 38 fonts and icons, stored in the device's internal storage, not in the firmware | Once after the first install, and only again if a release says so | The application's page (*Advanced → Update the firmware*: the same file field accepts `.bin` and `.res`) |
 | `smalltv-ultra-lang-<code>.res` (optional) | A language pack: Spanish (`es`), French (`fr`) or Italian (`it`) for the screens and the everyday part of the web page. Without one, the device speaks English | Only if you want another language; one at a time, the last one uploaded wins | The application's page (*Advanced → Update the firmware*, or *Advanced → Internal storage*) |
 
@@ -62,9 +62,9 @@ downloaded:
 
 | System | Command |
 |---|---|
-| macOS | `md5 smalltv-ultra-v0.6.7.bin` |
-| Linux | `md5sum smalltv-ultra-v0.6.7.bin` |
-| Windows (PowerShell) | `Get-FileHash -Algorithm MD5 smalltv-ultra-v0.6.7.bin` |
+| macOS | `md5 smalltv-ultra-v0.6.10.bin` |
+| Linux | `md5sum smalltv-ultra-v0.6.10.bin` |
+| Windows (PowerShell) | `Get-FileHash -Algorithm MD5 smalltv-ultra-v0.6.10.bin` |
 
 When you upload a `.bin`, the device's page asks for its MD5: copy it from `manifest.json` (or the folder's
 README). The device also checks the size, the image structure and that it will boot, **before** it replaces

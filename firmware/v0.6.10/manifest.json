@@ -1,0 +1,52 @@
+{
+  "name": "SmallTV Ultra firmware",
+  "version": "0.6.10",
+  "core_version": "0.5.14",
+  "role": "app",
+  "files": [
+    {
+      "file": "smalltv-ultra-v0.6.10.bin",
+      "bytes": 619664,
+      "md5": "91db5f8ba427984ce5edc8a29b091e64",
+      "sha256": "422a8f25a1978734f95c4704d8540512864cf7128c4b830178099116fb3d975e"
+    },
+    {
+      "file": "smalltv-ultra-resources.res",
+      "bytes": 154804,
+      "md5": "ddc571752f9817a94fcb619b5c9d23dd",
+      "sha256": "d53eb1d000d1d94f532a214217dd965c13b30e154467cc54f341bd836204b0f2",
+      "resources": 38,
+      "min_firmware": "0.5.6"
+    },
+    {
+      "file": "smalltv-ultra-lang-es.res",
+      "bytes": 22627,
+      "md5": "0937fe6d4bd0f607f0e8f5085895acd6",
+      "sha256": "72d724d3c752850550a7ae32b96f85e9cc57e0ce13aab5b3a6c348c7f9435a22",
+      "language": "es",
+      "language_name": "Spanish",
+      "min_firmware": "0.6.6"
+    },
+    {
+      "file": "smalltv-ultra-lang-fr.res",
+      "bytes": 23513,
+      "md5": "06e2b2a0b5912631dfdbe35b63c30208",
+      "sha256": "155f6974640de3274278e251c7a952c78119876d182296a68660f4131220a0e9",
+      "language": "fr",
+      "language_name": "French",
+      "min_firmware": "0.6.6"
+    },
+    {
+      "file": "smalltv-ultra-lang-it.res",
+      "bytes": 22893,
+      "md5": "4870aaf95e56353d147ed03754867a75",
+      "sha256": "9ded6197400fcc3787ab40a135656ec6d2a1359c4b804deaf4fa83029561394b",
+      "language": "it",
+      "language_name": "Italian",
+      "min_firmware": "0.6.6"
+    }
+  ],
+  "source_commit": "2719ac5",
+  "source_tag": "smalltv-v0.6.10",
+  "built": "2026-09-27"
+}

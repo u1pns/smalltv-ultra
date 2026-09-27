@@ -1,4 +1,4 @@
-# Firmware v0.6.7
+# Firmware v0.6.10
 
 Install it from the jailbreak page (or from any earlier version of this firmware) as described in
 [docs/02-install-firmware.md](../../docs/02-install-firmware.md), then upload the resource pack and, if you want the
@@ -6,19 +6,44 @@ device in another language, one language pack.
 
 | File | Size | MD5 | SHA-256 |
 |---|---|---|---|
-| `smalltv-ultra-v0.6.7.bin` — the firmware | 613 344 B | `91fc92ee17495ebd8197559374397fc4` | `13db8e92…165a9ff5` |
-| `smalltv-ultra-resources.res` — fonts and icons (38 files) | 154 804 B | `ddc571752f9817a94fcb619b5c9d23dd` | `d53eb1d0…04b0f2` |
-| `smalltv-ultra-lang-es.res` — Spanish (optional) | 20 960 B | `ff58aeb63a5e2626491697d2339651d8` | `be5a03db…6a2cd6` |
-| `smalltv-ultra-lang-fr.res` — French (optional) | 21 769 B | `241424211739c02319cb35b34e8d6037` | `ecb6f56c…a05798` |
-| `smalltv-ultra-lang-it.res` — Italian (optional) | 21 174 B | `b5d3b6d9bfb898550d53d3c01b36f606` | `86b59df0…d875228` |
+| `smalltv-ultra-v0.6.10.bin` — the firmware | 619 664 B | `91db5f8ba427984ce5edc8a29b091e64` | `422a8f25…fb3d975e` |
+| `smalltv-ultra-resources.res` — fonts and icons (38 files) | 154 804 B | `ddc571752f9817a94fcb619b5c9d23dd` | `d53eb1d0…6204b0f2` |
+| `smalltv-ultra-lang-es.res` — Spanish (optional) | 22 627 B | `0937fe6d4bd0f607f0e8f5085895acd6` | `72d724d3…f9435a22` |
+| `smalltv-ultra-lang-fr.res` — French (optional) | 23 513 B | `06e2b2a0b5912631dfdbe35b63c30208` | `155f6974…1220a0e9` |
+| `smalltv-ultra-lang-it.res` — Italian (optional) | 22 893 B | `4870aaf95e56353d147ed03754867a75` | `9ded6197…9561394b` |
 
 Full checksums in [`manifest.json`](manifest.json). The resource pack is the same file as in v0.6.0: if you already
-uploaded it, you do not need to upload it again. The language packs need firmware 0.6.6 or later (0.6.7 is the
-first published one); an older firmware stores the file but ignores it.
+uploaded it, you do not need to upload it again. **The language packs are new in this release**: if you use one,
+upload it again after updating, or the new cards of the web page stay in English.
 
 **What it includes:** clock, current weather and 3-day forecast (Open-Meteo), photo album, screens sent from your
 PC (panels), web settings page, over-the-air updates and a rescue mode that keeps the device updatable. Details
 and screenshots: [docs/03-features.md](../../docs/03-features.md).
+
+**New in v0.6.10** (v0.6.8 and v0.6.9 were internal steps and were not published; their changes are included here):
+
+- **Night mode, with "only the clock".** The night schedule now has its own card, *Night mode*. Besides dimming the
+  screen between two hours, it can **show only the clock at night, in dim grey**: during the night hours the screen
+  stays on the clock and shows just the time, nothing else. A hand gesture can still change the screen, and panel
+  alerts are always shown (they can be an alarm); both go back to the clock when their turn ends. Off by default.
+- **Brightness that can go really low.** The brightness slider (day and night) now follows the eye instead of a
+  straight line: the low end moves in tiny steps, and 1 is the dimmest the backlight can go (about 4 times dimmer
+  than before). Your saved values keep their number, so the screen will look a bit darker than before at the same
+  setting: move the slider up if you want it back.
+- **Device name.** Give each device a name in its web page (*Device name*, up to 15 characters). It is announced on
+  the network, so the clients can find a device by its name instead of its address. See
+  [docs/03-features.md](../../docs/03-features.md#finding-the-device-on-the-network).
+- **Language card.** Installing a language pack no longer hides in *Advanced*: the new *Language* card shows the
+  language in use and installs a pack in one step.
+- **Faster return after a Wi-Fi outage.** When the router disappears, the device now retries every minute while
+  nobody is connected to its own access point, so it comes back soon after the router does. While someone is
+  connected to that access point (rescuing the device), it keeps retrying less often, so as not to interrupt them.
+- The boot messages of the UDP log are now in English, and the page footer links to this repository
+  (*Manual and updates on GitHub*).
+
+**API:** no route changed or disappeared. Added the settings `name` (v0.6.8) and `night_clock` (v0.6.10), and the
+`name=` field at the end of the discovery answer. `brightness` and `night_brightness` keep their 0-100 range, but
+the number is now a slider position on the new curve. See [docs/api/API.md](../../docs/api/API.md).
 
 **New in v0.6.7: languages.** The firmware speaks English out of the box. Upload **one** language pack
 (`smalltv-ultra-lang-<code>.res`) and the screens and the everyday part of the web page switch to that language, with

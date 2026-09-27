@@ -106,7 +106,7 @@ async function device(host) {
     if (found.length === 0) throw new Error('no device answered the UDP discovery (port 7778). It may be off, on another ' +
       'network, or the network blocks broadcasts. Ask the user for the address and pass it as "host".');
     if (found.length > 1) throw new Error('several devices answered; pass "host" with one of: ' +
-      found.map(d => `${d.ip} (${d.name})`).join(', '));
+      found.map(d => `${d.ip} (${d.label ? `"${d.label}", ` : ''}${d.name})`).join(', '));
     discoveredHost = found[0].ip;
   }
   return {tv: SmallTV.fromEnv(discoveredHost), how: 'discovered'};
@@ -231,7 +231,7 @@ const TOOLS = [
   },
   {
     name: 'smalltv_set_setting',
-    description: 'Change one or more settings of a SmallTV desk display, all or nothing, e.g. {"brightness": 40} or {"screens": "clock,weather,panels", "rotate_s": 20}. Known keys: brightness (0-100), screens (comma list of clock, weather, forecast, status, album, panels), rotate (0/1), rotate_s, city, lat, lon, temp (C/F), wind, tz (POSIX time zone), h12, date_format, blink, night, night_start, night_end, night_brightness, log_udp. The device validates and rejects a bad value with the key it did not accept. Settings are stored in flash: do not call it in a loop.',
+    description: 'Change one or more settings of a SmallTV desk display, all or nothing, e.g. {"brightness": 40} or {"screens": "clock,weather,panels", "rotate_s": 20}. Known keys: brightness (0-100), screens (comma list of clock, weather, forecast, status, album, panels), rotate (0/1), rotate_s, city, lat, lon, temp (C/F), wind, tz (POSIX time zone), h12, date_format, blink, night, night_start, night_end, night_brightness (0-100: slider position, the light follows an exponential curve), night_clock (0/1: during the night hours show only the clock, in dim grey), log_udp, name (the device name shown by discovery: up to 15 ASCII characters, no = or quotes; empty removes it). The device validates and rejects a bad value with the key it did not accept. Settings are stored in flash: do not call it in a loop.',
     inputSchema: {
       type: 'object',
       properties: {

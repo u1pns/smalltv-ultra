@@ -174,18 +174,26 @@ export class SmallTV {
   /**
    * Like fromEnv, but when no address is given (argument or SMALLTV_HOST) it asks the network with
    * discover(): one device answering -> that one (said on stderr); several -> error listing them; none -> error.
+   * With `name` (or SMALLTV_NAME) only the devices called that way count (their label, set in the device web
+   * page, or their host name smalltv-xxxxxx): two with the same name are an error, never "the first one".
    */
-  static async locate(host, {log = msg => console.error(msg), ...discoverOpts} = {}) {
+  static async locate(host, {log = msg => console.error(msg), name, ...discoverOpts} = {}) {
     const given = host || process.env.SMALLTV_HOST;
     if (given) return SmallTV.fromEnv(given);
-    const found = await discover(discoverOpts);
+    const wanted = name ?? process.env.SMALLTV_NAME ?? '';
+    const all = await discover(discoverOpts);
+    const found = wanted ? byName(all, wanted) : all;
     if (found.length === 1) {
-      log(`found ${found[0].name} at ${found[0].ip} (firmware ${found[0].version}, ${found[0].mode} mode)`);
-      return SmallTV.fromEnv(found[0].ip);
+      const d = found[0];
+      log(`found ${d.label ? `"${d.label}" (${d.name})` : d.name} at ${d.ip} (firmware ${d.version}, ${d.mode} mode)`);
+      return SmallTV.fromEnv(d.ip);
     }
+    if (found.length === 0 && wanted && all.length)
+      throw new Error(`no device is called "${wanted}" (a device in rescue mode answers without its name). These answered:\n` +
+        all.map(formatDevice).join('\n'));
     if (found.length === 0) throw new Error(noDeviceMessage(discoverOpts));
-    throw new Error('several devices answered; choose one with --host (or SMALLTV_HOST):\n' +
-      found.map(formatDevice).join('\n'));
+    throw new Error((wanted ? `several devices are called "${wanted}"` : 'several devices answered') +
+      '; choose one with --host (or SMALLTV_HOST):\n' + found.map(formatDevice).join('\n'));
   }
 
   static fromEnv(host) {
@@ -272,6 +280,9 @@ export class SmallTV {
 //   M 21:43:07 [HERE] smalltv-a1b2c3 mac=aa:bb:cc:dd:ee:ff ip=10.0.0.42 v=0.6.4 mode=app
 // The mode is "app" or "rescue". Firmware 0.6.3 and older answer "[AQUI] ... modo=app|rescate"; both forms are
 // accepted, and the mode is always reported as "app" or "rescue". The device reads nothing from the question and never answers the sender directly.
+// Firmware 0.6.8 and newer may end the line with " name=<label>": the name the owner gave the device in its web page
+// (settings key `name`, up to 15 ASCII characters, may contain spaces, never "="). Only in app mode and only if set.
+// It is reported as `label` ("" when there is none). The identity is still the MAC: two devices may share a label.
 
 /** Discovery defaults. Each one can be overridden by the environment variable in the comment. */
 export const DISCOVERY = Object.freeze({
@@ -281,7 +292,7 @@ export const DISCOVERY = Object.freeze({
   WAIT_MAX_MS: 30_000,
 });
 const DISCOVERY_LINE =
-  /\[(?:HERE|AQUI)\]\s+(\S+)\s+mac=(\S+)\s+ip=([0-9.]+)\s+v=(\S+)\s+(?:mode|modo)=(\S+)/;
+  /\[(?:HERE|AQUI)\]\s+(\S+)\s+mac=(\S+)\s+ip=([0-9.]+)\s+v=(\S+)\s+(?:mode|modo)=(\S+)(?:[ \t]+name=([ -~]+))?/;
 
 function envNumber(name, fallback) {
   const v = process.env[name];
@@ -310,13 +321,22 @@ async function broadcastAddresses() {
 export function parseDiscovery(text) {
   const m = DISCOVERY_LINE.exec(String(text));
   if (!m) return null;
-  const [, name, mac, ip, version, mode] = m;
-  return {name, mac: mac.toLowerCase(), ip, version, mode: mode === 'rescate' ? 'rescue' : mode};
+  const [, name, mac, ip, version, mode, label] = m;
+  return {name, mac: mac.toLowerCase(), ip, version, mode: mode === 'rescate' ? 'rescue' : mode,
+    label: (label ?? '').trim()};
 }
 
 /** One line per device, the same layout as the shell and PowerShell clients. */
 export function formatDevice(d) {
-  return `${d.ip.padEnd(16)} ${d.name.padEnd(16)} ${d.mac.padEnd(18)} v${d.version.padEnd(8)} ${d.mode}`;
+  return `${d.ip.padEnd(16)} ${d.name.padEnd(16)} ${d.mac.padEnd(18)} v${d.version.padEnd(8)} ` +
+    (d.label ? `${d.mode.padEnd(6)}  "${d.label}"` : d.mode);
+}
+
+/** The devices called `name`: their label or their host name (smalltv-xxxxxx), ignoring case. "" matches none. */
+export function byName(found, name) {
+  const n = String(name ?? '').trim().toLowerCase();
+  if (!n) return [];
+  return found.filter(d => d.label.toLowerCase() === n || d.name.toLowerCase() === n);
 }
 
 function noDeviceMessage({waitMs} = {}) {
@@ -327,7 +347,7 @@ function noDeviceMessage({waitMs} = {}) {
 }
 
 /**
- * Asks the local network which devices are there. Resolves to [{name, mac, ip, version, mode}], one per MAC
+ * Asks the local network which devices are there. Resolves to [{name, mac, ip, version, mode, label}], one per MAC
  * (empty if nobody answered). Never throws for "nobody answered"; throws if the reply port cannot be opened.
  * Options (for tests and odd networks): addresses (array), askPort, replyPort, waitMs.
  */

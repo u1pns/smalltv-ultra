@@ -21,7 +21,10 @@ built-in web updater; if the device does not boot, you need to open it and use a
 **Without an address the apps find the device on your network** (UDP discovery, about two seconds): if exactly one
 device answers they use it and say so; if several answer they list them and ask you to choose with `--host`; if none
 answers they say why that can happen. `node discover.mjs` just lists them (`--ip` prints the first address,
-`--json` the whole list). To choose, set the address once (`export SMALLTV_HOST=10.0.0.42`, or
+`--json` the whole list, `--name NAME` only the devices with that name). To choose by the name set in the device
+web page (firmware 0.6.8+), set `SMALLTV_NAME=Kitchen` (or pass `{name}` to `SmallTV.locate`); two devices with the
+same name are an error, never "the first one", and a device in rescue mode answers without its name. Or set the
+address once (`export SMALLTV_HOST=10.0.0.42`, or
 `$env:SMALLTV_HOST='10.0.0.42'` on Windows) or pass `--host` on every call. Discovery is a broadcast: guest networks
 and "client isolation" block it. User and password default to `admin` / `12345678`; override them
 with `SMALLTV_USER` and `SMALLTV_PASSWORD`. Every app has `--dry-run`, which prints the panel, and `--out FILE`,

@@ -27,7 +27,12 @@ may ask whether PowerShell can use the network: allow it for private networks.
 .\status.ps1 -Address 10.0.0.42             # or give the address (shown on the device's Status screen)
 $env:SMALLTV_HOST = '10.0.0.42'             # or once, for all the scripts
 $env:SMALLTV_HOST = .\discover.ps1 -IpOnly  # or: discover once, then reuse it
+$env:SMALLTV_NAME = 'Kitchen'               # or choose by the name set in the device web page (firmware 0.6.8+)
+.\discover.ps1 -Name Kitchen                # lists only the device(s) with that name
 ```
+
+A device name is a label, not an identity: if two devices share it the scripts stop and list them instead of
+picking one. A device in rescue mode answers without its name; use its address then.
 
 The address can change (it comes from your router by DHCP), so prefer discovery to a written-down address.
 Discovery is a broadcast: guest networks and "client isolation" block it, and then you need the address. Optional
@@ -58,7 +63,7 @@ you do not run it.
 .\status.ps1
 
 # Firmware update. DO NOT cut the power until the device is back.
-.\update-firmware.ps1 -File .\smalltv-ultra-v0.6.7.bin
+.\update-firmware.ps1 -File .\smalltv-ultra-v0.6.10.bin
 
 # Fonts and icons in one go (skips what is already there; run it again if it stops halfway)
 .\upload-resources.ps1 -Path .\smalltv-resources.res

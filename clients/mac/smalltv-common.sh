@@ -4,6 +4,9 @@
 #   --host HOST          device address, e.g. 10.0.0.42 or smalltv.local (a ":port" suffix is allowed)
 #   SMALLTV_HOST         same, from the environment (the --host option wins)
 #                        With neither, the scripts find the device on the network (UDP discovery, see below).
+#   --name NAME          with discovery, use the device called NAME: the name set in its web page (firmware 0.6.8+)
+#   SMALLTV_NAME         or its host name smalltv-xxxxxx; case does not matter. Two devices with the same name are an
+#                        error, never "the first one". A device in rescue mode answers without its name.
 #   SMALLTV_USER         web user      (default: admin)
 #   SMALLTV_PASSWORD     web password  (default: 12345678, the same on every unit)
 #
@@ -18,6 +21,7 @@
 SMALLTV_USER=${SMALLTV_USER:-admin}
 SMALLTV_PASSWORD=${SMALLTV_PASSWORD:-12345678}
 SMALLTV_HOST=${SMALLTV_HOST:-}
+SMALLTV_NAME=${SMALLTV_NAME:-}
 
 # Upload time budget, same rule as the device web page: 60 s plus 1 s per KiB (a phone far from the
 # access point can be as slow as ~1 KiB/s), capped at 20 minutes. Never a fixed number.
@@ -39,6 +43,8 @@ parse_common() {
     case "$1" in
       --host) [ $# -ge 2 ] || die "--host needs a value"; SMALLTV_HOST=$2; shift 2 ;;
       --host=*) SMALLTV_HOST=${1#--host=}; shift ;;
+      --name) [ $# -ge 2 ] || die "--name needs a value"; SMALLTV_NAME=$2; shift 2 ;;
+      --name=*) SMALLTV_NAME=${1#--name=}; shift ;;
       *) SMALLTV_REST="$SMALLTV_REST $(quote "$1")"; shift ;;
     esac
   done
@@ -48,11 +54,13 @@ parse_common() {
 quote() { printf "'%s'" "$(printf '%s' "$1" | sed "s/'/'\\\\''/g")"; }
 
 # discover_devices: asks the network which devices are there. Prints one line per device, tab-separated:
-#   IP  NAME  MAC  VERSION  MODE        (MODE is "app" or "rescue")
+#   IP  NAME  MAC  VERSION  MODE  LABEL   (MODE is "app" or "rescue"; LABEL is the name the owner gave it, or empty)
 # Nothing is printed if nobody answered. The device answers any UDP datagram on 7778 with one broadcast line on
 # 7779:  "M 21:43:07 [HERE] smalltv-a1b2c3 mac=aa:bb:... ip=10.0.0.42 v=0.6.4 mode=app" (mode "app" or "rescue").
 # Firmware 0.6.3 and older answer "[AQUI] ... modo=app|rescate"; both forms are accepted, and the mode is always
-# reported as "app" or "rescue". Written in perl because sh has no sockets.
+# reported as "app" or "rescue". Firmware 0.6.8 and newer may end the line with " name=<label>" (up to 15 ASCII
+# characters, may contain spaces, never "="), only in app mode and only if set. Only printable ASCII is kept from it.
+# Written in perl because sh has no sockets.
 discover_devices() {
   command -v perl >/dev/null 2>&1 || die "perl is needed for discovery; pass the address with --host instead"
   perl -MIO::Socket::INET -MSocket -e '
@@ -73,9 +81,10 @@ discover_devices() {
     while ((my $left = $end - time) > 0) {
       select(my $r = $rin, undef, undef, $left) or next;
       recv($s, my $buf, 1024, 0);
-      next unless $buf =~ /\[(?:HERE|AQUI)\]\s+(\S+)\s+mac=(\S+)\s+ip=([0-9.]+)\s+v=(\S+)\s+(?:mode|modo)=(\S+)/;
+      next unless $buf =~ /\[(?:HERE|AQUI)\]\s+(\S+)\s+mac=(\S+)\s+ip=([0-9.]+)\s+v=(\S+)\s+(?:mode|modo)=(\S+)(?:[ \t]+name=([ -~]+))?/;
       my $m = $5 eq "rescate" ? "rescue" : $5;
-      $seen{lc $2} = join("\t", $3, $1, lc $2, $4, $m);
+      my $l = defined $6 ? $6 : ""; $l =~ s/^\s+|\s+$//g;
+      $seen{lc $2} = join("\t", $3, $1, lc $2, $4, $m, $l);
     }
     print "$_\n" for values %seen;
   ' "${SMALLTV_DISCOVERY_PORT:-7778}" "${SMALLTV_DISCOVERY_REPLY_PORT:-7779}" \
@@ -84,16 +93,32 @@ discover_devices() {
 
 # format_devices: the tab-separated lines of discover_devices, aligned for people.
 format_devices() {
-  awk -F '\t' '{ printf "%-16s %-16s %-18s v%-8s %s\n", $1, $2, $3, $4, $5 }'
+  awk -F '\t' '{ if ($6 != "") printf "%-16s %-16s %-18s v%-8s %-6s  \"%s\"\n", $1, $2, $3, $4, $5, $6;
+                 else printf "%-16s %-16s %-18s v%-8s %s\n", $1, $2, $3, $4, $5 }'
+}
+
+# filter_by_name NAME: keeps the lines of discover_devices whose label or host name is NAME (ignoring case).
+filter_by_name() {
+  awk -F '\t' -v want="$1" 'BEGIN { w = tolower(want); gsub(/^[ \t]+|[ \t]+$/, "", w) }
+    w != "" && (tolower($6) == w || tolower($2) == w)'
 }
 
 # discover_host: sets SMALLTV_HOST when exactly one device answers; otherwise explains and exits.
 discover_host() {
   _found=$(discover_devices) || exit 1
+  if [ -n "$SMALLTV_NAME" ]; then
+    _all=$_found
+    _found=$(printf '%s\n' "$_all" | filter_by_name "$SMALLTV_NAME")
+    if [ -z "$_found" ] && [ -n "$_all" ]; then
+      echo "error: no device is called \"$SMALLTV_NAME\" (a device in rescue mode answers without its name). These answered:" >&2
+      printf '%s\n' "$_all" | format_devices >&2
+      exit 1
+    fi
+  fi
   _n=$(printf '%s' "$_found" | grep -c .)
   if [ "$_n" = 1 ]; then
     SMALLTV_HOST=$(printf '%s' "$_found" | cut -f 1)
-    printf '%s\n' "$_found" | awk -F '\t' '{ printf "found %s at %s (firmware %s, %s mode)\n", $2, $1, $4, $5 }' >&2
+    printf '%s\n' "$_found" | awk -F '\t' '{ printf "found %s at %s (firmware %s, %s mode)\n", ($6 != "" ? "\"" $6 "\" (" $2 ")" : $2), $1, $4, $5 }' >&2
   elif [ "$_n" = 0 ]; then
     die "no device answered the discovery in ${SMALLTV_DISCOVERY_WAIT:-2} s. It may be off, on another network, or \
 running firmware without discovery (older than 0.5.23); guest networks often block broadcasts. Pass the address \

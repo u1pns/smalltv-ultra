@@ -19,7 +19,12 @@ sh status.sh                           # finds the device and shows its status
 sh status.sh --host 10.0.0.42          # or give the address (shown on the device's Status screen)
 export SMALLTV_HOST=10.0.0.42          # or once, for all the scripts
 export SMALLTV_HOST=$(sh discover.sh --ip)   # or: discover once, then reuse it
+sh status.sh --name Kitchen            # or choose by the name set in the device web page (firmware 0.6.8+)
+export SMALLTV_NAME=Kitchen            # the same, once, for all the scripts
 ```
+
+A device name is a label, not an identity: if two devices share it the scripts stop and list them instead of
+picking one. A device in rescue mode answers without its name; use its address then.
 
 The address can change (it comes from your router by DHCP), so prefer discovery to a written-down address.
 Discovery is a broadcast: guest networks and "client isolation" block it, and then you need the address. Optional
@@ -50,7 +55,7 @@ Every script prints its full help with `-h`. `smalltv-common.sh` holds the share
 sh status.sh
 
 # Firmware update. DO NOT cut the power until the device is back.
-sh update-firmware.sh smalltv-ultra-v0.6.7.bin
+sh update-firmware.sh smalltv-ultra-v0.6.10.bin
 
 # Fonts and icons in one go (skips what is already there; run it again if it stops halfway)
 sh upload-resources.sh smalltv-resources.res

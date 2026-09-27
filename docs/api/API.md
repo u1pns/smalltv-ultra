@@ -107,7 +107,7 @@ values and their format. Known parameters:
 
 | Parameter | Meaning |
 |---|---|
-| `brightness` | brightness, 0-100 |
+| `brightness` | brightness, 0-100 (0 = backlight off). It is a slider position, not a linear fraction: the light follows an exponential curve in 1/256 steps (1 -> 1/256, 10 -> 11/256, 50 -> 77/256, 100 -> full), so the low end is fine enough for a dark room. Same scale for `night_brightness` (since v0.6.9) |
 | `screens` | comma-separated list of screens that rotate: `clock,weather,forecast,status,album,panels` |
 | `rotate`, `rotate_s` | automatic screen change on/off, and seconds each screen stays before the next one |
 | `city`, `lat`, `lon` | weather location: the name shown on screen, and the coordinates that decide the forecast |
@@ -119,10 +119,12 @@ values and their format. Known parameters:
 | `date_format` | date format |
 | `blink` | blinking colon, `0` or `1` |
 | `night`, `night_start`, `night_end`, `night_brightness` | night dimming: on/off, start hour, end hour, night brightness |
+| `night_clock` | `1` = during the night hours the screen stays on the clock and shows only HH:MM in dim grey. A hand gesture can still change the screen and panel alerts are always shown; both go back to the clock when their turn ends (since v0.6.9) |
 | `log_udp` | `0` or `1`: turns the UDP log off or on (off by default; persisted) |
 | `hand` | `0` or `1`: hand detection off or on (**experimental**, off by default) |
 | `hand_action` | what a gesture does: `dim` (switch between day and night brightness), `screen` (next screen), `panels` (show the panels screen; the next gesture goes back), `night` (screen off; the next gesture turns it on) |
 | `flip` | `0` or `1`: rotate the display 180°. The start-up screen, rescue mode and the *Status* screen are not rotated |
+| `name` | the device's name, shown by discovery (firmware 0.6.8+): up to 15 printable ASCII characters; spaces are allowed inside but not at the start or end; `=`, `"`, `'`, `\` and `` ` `` are not. Empty (the default) means no name. It is a label, not an identity: two devices may share it, so pick a device by its MAC when it matters |
 
 ### Hand detection (`GET /api/app/hand`, experimental)
 
@@ -152,6 +154,22 @@ the counter and any brightness or screen change a gesture made.
 
 Once its clock is set, the device requests **NTP and the weather once an hour, at one minute past the hour**.
 There is no other periodic outgoing connection: everything else happens because you send it something.
+
+### Discovery (UDP, both modes)
+
+Send any UDP datagram to port **7778** (broadcast); the device never reads it. It answers with one line, broadcast
+to port **7779**, at most once per second:
+
+```
+M 21:43:07 [HERE] smalltv-a1b2c3 mac=aa:bb:cc:dd:ee:ff ip=10.0.0.42 v=0.6.8 mode=app name=Kitchen
+```
+
+`mode` is `app` or `rescue`. Firmware 0.6.8 and newer end the line with `name=<name>` (the `name` setting) **only in
+`app` mode and only if a name is set**; it is always the last field and may contain spaces, so read it up to the end
+of the line. Older firmware answers without it, and 0.6.3 and older answer `[AQUI] … modo=app|rescate`. The identity
+is the MAC (and the host name `smalltv-<chip-id>` derived from it): the name is only for people. The clients in
+[`clients/`](../../clients/) accept every form and can choose a device by its name (`--name`, `-Name`,
+`SMALLTV_NAME`).
 
 The optional log goes out as a **UDP broadcast on port 7777** (`nc -ul 7777`). Each line looks like
 `N HH:MM:SS [TAG] text`, where `N` is `D`, `I` or `E`. Until the clock is synchronised, the time counts from boot

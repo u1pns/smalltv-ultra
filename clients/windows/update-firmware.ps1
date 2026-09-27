@@ -7,7 +7,7 @@
   leaves the old firmware in place and you can simply try again.
   Works in both modes: normal (app) and rescue.
 .EXAMPLE
-  .\update-firmware.ps1 -Address 10.0.0.42 -File .\smalltv-ultra-v0.6.7.bin
+  .\update-firmware.ps1 -Address 10.0.0.42 -File .\smalltv-ultra-v0.6.10.bin
 #>
 param(
     [string]$Address,
