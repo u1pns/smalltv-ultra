@@ -16,6 +16,13 @@ in rescue mode, without having to unfold anything.
 
 ## How to enter it
 
+- **By itself, when it cannot join its Wi-Fi.** If the application starts and still has no IP address after one
+  minute (wrong password, network switched off or out of range, signal too weak), it restarts into rescue mode and
+  the screen shows `RESCUE: NO NETWORK`. Join its access point (below) and set the Wi-Fi from its page: once it has
+  had an IP address for 2 minutes in a row, it goes back to the application on its own. Wi-Fi requirements:
+  [03-features.md](03-features.md#wi-fi-what-the-device-needs).
+- **By itself, after failed starts.** Three starts in a row that never reach one minute of normal running put it in
+  rescue mode (`RESCUE: BOOT FAILS`). The three power cuts described below do the same thing on purpose.
 - **From the web page**: *Advanced → Boot mode → Enter rescue mode*. The device restarts into rescue mode.
 - **From the API**: `POST /api/rescue/enter` (see [api/API.md](api/API.md)).
 - **Without the web page — three short power cuts.** Unplug and plug the power back in three times in a row,

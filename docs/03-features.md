@@ -156,6 +156,23 @@ Want another language? Open an issue asking for it, or offering to translate: th
 screens plus the everyday cards of the web page), and each screen text has a size limit, so the maintainer
 builds the pack and sends you a picture of every screen to check.
 
+## Wi-Fi: what the device needs
+
+- **A 2.4 GHz network.** The device cannot see 5 GHz networks. If your network does not appear when the device
+  searches for networks, your router is probably broadcasting it on 5 GHz only: turn on its 2.4 GHz band, or use
+  the router's 2.4 GHz network.
+- **A good signal where the device sits.** The list of networks on its web page shows the signal of each one in
+  dBm. As a rough guide, -67 dBm or better is comfortable; from about -75 dBm down, pages load slowly, uploads may
+  need to be retried and the device can drop off the network. A failed upload changes nothing: move the device
+  closer to the router and try again.
+- **The same network as the computer that talks to it**, and never a guest network: guest networks usually keep
+  devices apart ("client isolation"), so your computer cannot reach the device and discovery finds nothing.
+- **Without Wi-Fi it goes to rescue mode by itself.** If the application starts and has no IP address after one
+  minute (wrong password, network switched off or out of range, signal too weak), it restarts into rescue mode
+  (`RESCUE: NO NETWORK` on the screen) and you can set the Wi-Fi again from its own access point. Once it has had an
+  IP address for 2 minutes in a row, it goes back to the application on its own. See
+  [04-recovery.md](04-recovery.md#how-to-enter-it).
+
 ## Finding the device on the network
 
 The device's IP address comes from your router and can change. Ways to find it:

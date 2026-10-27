@@ -125,12 +125,13 @@ Sources: GeekMagic's user manual (size, display, power) and measurements on a re
 
 1. **Power it** from a USB charger of 5 V and at least 1 A, with the cable that came in the box (USB-A to USB-C).
    GeekMagic's manual says USB-C to USB-C cables are not supported; a flickering screen, or no screen at all, is
-   usually the cable or the charger.
+   usually the cable or the charger. Put it where your Wi-Fi signal is good.
 2. **On its first start it creates an open Wi-Fi network called `GIFTV`.** Join it with your phone. Ignore the "no
    internet" warning; if the next step does not load, turn off your phone's mobile data.
 3. **Open `http://192.168.4.1/`.** On the Wi-Fi settings (the *Network* or *System* tab, depending on the factory
-   version), press *Scan*, choose your home network, type its password and save. Remember: 2.4 GHz only. The device
-   restarts.
+   version), press *Scan*, choose your home network, type its password and save. Use the network your computer is on,
+   not a guest network. If your network is not in the list, it is probably 5 GHz only: the device needs 2.4 GHz
+   ([Wi-Fi requirements](03-features.md#wi-fi-what-the-device-needs)). The device restarts.
 4. **Write down the address it shows on the screen while it starts** (something like `10.0.0.42`). You and your AI
    assistant will need it, and it can change from one day to another.
 5. **From a computer on the same Wi-Fi, open `http://<that address>/`.** That is the factory web page: choose your
@@ -166,8 +167,8 @@ When it works, set up the MCP server and suggest a few things I could show on th
 ```
 
 What to expect: the assistant uploads the jailbreak image, and the device **leaves your network on purpose**. The
-assistant then asks you to join the device's own Wi-Fi from your phone, connect the device back to your home Wi-Fi,
-and upload the application from your computer's browser. From that point on the assistant can talk to the
+assistant then asks you to join the device's own Wi-Fi from your phone, connect the device back to your home Wi-Fi
+(the same network as your computer), and upload the application from your computer's browser. From that point on the assistant can talk to the
 device by itself, and the rest (resources, settings, your first panels) is a conversation.
 
 If you prefer to do it by hand, follow the [Quick start](../README.md#quick-start) instead.
@@ -199,9 +200,10 @@ recovered by opening the case. Everything below exists to keep that updater work
    which stage.
 3. **One upload at a time.** Never ask for a power cut during an upload or a restart. Three starts in a row, each
    shorter than 60 seconds, put the application in rescue mode: that is expected, not a fault (see 04-recovery.md).
-4. **Check the starting point** before the jailbreak: `GET /v.json` on the factory firmware answered
-   `{"m":"SmallTV-Ultra","v":"Ultra-V9.1.54"}` on the unit this project was developed on. Another model means
-   stop. Another factory version is untested: tell the user before uploading. If `/v.json` does not answer, ask the
+4. **Check the starting point** before the jailbreak: `GET /v.json` on the factory firmware answers with the model
+   (`m`, it must be `SmallTV-Ultra`; anything else means stop) and the factory version (`v`). The project was
+   developed on `Ultra-V9.1.54`, and a unit with `Ultra-V9.0.54` also accepted the jailbreak. Any other version is
+   untested: tell the user before uploading. If `/v.json` does not answer, ask the
    user to read the version on the factory web page. If the factory updater refuses the jailbreak, nothing was written.
 5. **Credentials depend on the stage**, all lowercase (phones capitalise the first letter on their own):
    factory page, none; jailbreak page, `admin` / `kapifo`; application, `admin` / `12345678`. The device's own access
@@ -226,9 +228,9 @@ recovered by opening the case. Everything below exists to keep that updater work
 | # | Who | What | How you know it worked |
 |---|---|---|---|
 | 1 | you | Check the model and the factory version: `curl -s http://<address>/v.json` (rule 4) | model `SmallTV-Ultra`, version noted and told to the user |
-| 2 | you | Upload the jailbreak to the factory updater: `curl -F "firmware=@smalltv-ultra-jailbreak-v0.1.2.bin" "http://<address>/update"` | *Update Success! Rebooting...* |
-| 3 | **the user, on a phone** | Join `SmallTV-Setup-<chip-id>` (password `12345678`), open `http://192.168.4.1/`, log in with `admin` / `kapifo`, and join the home Wi-Fi (*Conectar a tu Wi-Fi* → *Buscar redes* → *Conectar y guardar*) | the page shows the device's new address on the home network; ask the user for it |
-| 4 | **the user, in the computer's browser** | Open the device's page at its new address (login `admin` / `kapifo`) and upload the application `.bin`: *Actualizar el firmware* → choose the file → type its MD5 in *MD5 del archivo* → *Verificar y actualizar*. Give the user the file path and the MD5. The user does this step because the jailbreak page has its own login and no documented scripted upload, and the ready-made clients do not talk to it | *Verificado; reiniciando*, and the device comes back in about 15 seconds |
+| 2 | you | Upload the jailbreak to the factory updater: `curl -F "firmware=@smalltv-ultra-jailbreak-v0.1.2.bin" "http://<address>/update"` | *Update Success! Rebooting...*, after up to about a minute: do not interrupt it |
+| 3 | **the user, on a phone** | Join `SmallTV-Setup-<chip-id>` (password `12345678`), open `http://192.168.4.1/`, log in with `admin` / `kapifo`, and join the home Wi-Fi (*Conectar a tu Wi-Fi* → *Buscar redes* → *Conectar y guardar*). It must be **the same network as your computer**, never a guest network, and 2.4 GHz with a good signal ([requirements](03-features.md#wi-fi-what-the-device-needs)) | the page shows the device's new address; ask the user for it and check that it answers **from your computer** (`curl -s -u admin:kapifo http://<new address>/api/status`). If it does not, the device is on another network: the user rejoins `SmallTV-Setup-<chip-id>` and picks the right one |
+| 4 | **the user, in the computer's browser** | Open the device's page at its new address (login `admin` / `kapifo`) and upload the application `.bin`: *Actualizar el firmware* → choose the file → type its MD5 in *MD5 del archivo* → *Verificar y actualizar*. Copy the file to a folder the user knows (their Downloads folder, for example) and give them that exact path and the MD5. The user does this step because the jailbreak page has its own login and no documented scripted upload, and the ready-made clients do not talk to it | *Verificado; reiniciando*, and the device comes back in about 15 seconds |
 | 5 | you | Find the device with the `discover` command of a client folder; from now on the login is `admin` / `12345678` | discovery lists it with `mode=app` |
 | 6 | the user, then you | The user opens *Advanced → Internal storage* and, if it says the storage is not formatted, presses *Format the storage* (usual on a new unit). Then you upload `smalltv-ultra-resources.res` with the `upload-resources` script of the mac or windows client folder, or the user does it from *Advanced → Update the firmware* | after about a minute, `GET /api/app/health` shows `"missing": []` |
 | 7 | the user, then you | Optional language pack, from the web page (same field as the resource pack). Then the user's city, time zone and screens (web page, `settings` script, or the MCP server) | the screens show the right time and weather |

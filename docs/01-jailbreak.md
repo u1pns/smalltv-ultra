@@ -20,8 +20,10 @@ upload it.
 ## What you need
 
 - A GeekMagic SmallTV Ultra running its factory firmware. This project was developed on a unit with factory
-  firmware `Ultra-V9.1.54`; other factory versions have not been tested.
-- The device and your computer on the same Wi-Fi network.
+  firmware `Ultra-V9.1.54`; a unit with `Ultra-V9.0.54` also accepted and ran the bridge. Other factory versions
+  have not been tested.
+- The device and your computer on the same Wi-Fi network: 2.4 GHz, with a good signal where the device sits, and not
+  a guest network (see [03-features.md](03-features.md#wi-fi-what-the-device-needs)).
 - A web browser, or `curl`.
 
 ## Steps
@@ -30,7 +32,7 @@ upload it.
    client list. Do not reuse an address from another day: it can change.
 2. **Open the factory update page** at `http://<device-address>/update`.
 3. **Upload the bridge** (`smalltv-ultra-jailbreak-v0.1.2.bin`) in the *firmware* field of that form — not the filesystem
-   field. It takes a few seconds and the device restarts.
+   field. It can take about a minute: do not cut the power or close the page. Then the device restarts.
 
    From the command line, the equivalent is:
 

@@ -61,6 +61,23 @@ that just lists the devices it finds.
 Discovery is a broadcast on your local network: it does not cross routers, and guest networks or "client
 isolation" usually block it. In those cases set the address by hand (the device's *Status* screen shows it).
 
+## Several devices on the same network
+
+Give each device a name in its web page (*Device name*), for example `Kitchen` and `Office`. Discovery announces the
+name, so the clients can choose a device by name instead of by address, which keeps working when the router hands out
+new addresses:
+
+- The `discover` command of each client folder lists every device with its name and address.
+- The shell, PowerShell and Node.js clients: set `SMALLTV_NAME=Kitchen` (PowerShell: `$env:SMALLTV_NAME = 'Kitchen'`).
+  The macOS shell scripts also take `--name Kitchen`. Two devices with the same name are an error, never "the first one".
+- The MCP server lists the devices it finds, with their names, when more than one answers: tell your assistant which
+  one you mean ("show it on the kitchen one").
+
+This is how a household or an office shares them: any computer on the network can send a screen or a message to any
+device, for example a script that sends "dinner is ready" to the kitchen one, or the status of your builds to the
+office one. The devices do not talk to each other, and a device in another home is out of reach: that would mean
+exposing it to the internet, which this firmware does not support.
+
 ## Rules for well-behaved clients
 
 1. **Prefer text to images for anything that changes often.** A 240×240 image is about 115 KB; a text panel is

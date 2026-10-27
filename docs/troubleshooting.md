@@ -10,6 +10,10 @@
 | The firmware upload is rejected | Check the MD5 you typed against the release README, and that you chose the application `.bin`. A rejected upload changes nothing; you can retry |
 | The page says the file is neither a firmware image nor a resource pack | The file is not a `.bin` or `.res` from this project (or it is damaged). Download it again and check its MD5 |
 | The login is refused | Application: `admin` / `12345678`. Bridge: see [01-jailbreak.md](01-jailbreak.md) |
+| The factory update page seems stuck after pressing *Update* | It can take about a minute. Do not cut the power or close the page; wait for *Update Success! Rebooting...* |
+| My Wi-Fi network does not appear in the list of networks | The device only sees 2.4 GHz networks: your router is probably broadcasting that network on 5 GHz only. Turn on its 2.4 GHz band, or use its 2.4 GHz network. See [03-features.md](03-features.md#wi-fi-what-the-device-needs) |
+| After joining the Wi-Fi, my computer cannot reach the device (no answer, discovery finds nothing) | The device and the computer are on different networks, or on a guest network that keeps devices apart. Connect the device to the same network as the computer, never to a guest network |
+| Pages load slowly, uploads fail, the device keeps disappearing from the network | Weak Wi-Fi signal. Check the signal in the list of networks (in dBm) and move the device closer to the router. A failed upload changes nothing; retry |
 
 ## Everyday use
 
@@ -29,6 +33,7 @@
 | Symptom | Most likely cause and what to do |
 |---|---|
 | The device booted into rescue mode on its own | It restarted several times without reaching a stable state (for example after a few quick power cuts, or several updates in a row). Leave rescue mode from the web page, or upload a working firmware. It also goes back to the application by itself after 2 or 10 minutes, depending on why it entered ([04-recovery.md](04-recovery.md#how-to-leave-it)) |
+| The screen says `RESCUE: NO NETWORK` | The application could not get on its Wi-Fi within a minute of starting (wrong password, network off, out of range, weak signal). Join `SmallTV-Setup-<chip-id>` (password `12345678`), open `http://192.168.4.1/` and set the Wi-Fi; it goes back to the application by itself 2 minutes after it has an IP address. See [04-recovery.md](04-recovery.md#how-to-enter-it) |
 | Three power cuts did not enter rescue mode | Each start must last long enough to actually boot (a few seconds) and less than 60 seconds. Try again |
 | Nothing works: no access point, no web page | The image does not boot. This cannot be fixed over Wi-Fi: it needs a UART adapter. See [04-recovery.md](04-recovery.md) |
 
