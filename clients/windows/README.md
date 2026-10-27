@@ -66,7 +66,7 @@ you do not run it.
 .\update-firmware.ps1 -File .\smalltv-ultra-v0.6.10.bin
 
 # Fonts and icons in one go (skips what is already there; run it again if it stops halfway)
-.\upload-resources.ps1 -Path .\smalltv-resources.res
+.\upload-resources.ps1 -Path .\smalltv-ultra-resources.res
 
 # A message that pops up for 15 seconds
 .\send-panel.ps1 -Title Home -Big 'Dinner ready' -Line 'Come down' -Seconds 15

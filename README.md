@@ -14,6 +14,9 @@ receive a new firmware image over Wi-Fi**.
 > This project is not affiliated with or endorsed by GeekMagic. Installing it replaces the factory firmware, and
 > the factory firmware is **not** distributed here: if you want to go back to it one day, you need your own copy.
 
+**New to the device?** Start with [docs/00-introduction.md](docs/00-introduction.md): what it can and cannot do, your
+options, and how to let an AI assistant (Claude Code, Codex...) install the firmware for you.
+
 ## Read this before you flash anything
 
 - **The device has no accessible serial port.** The USB-C connector only provides power; the serial pads are
@@ -96,7 +99,9 @@ Wi-Fi, so after the restart **nothing answers at the old address**. To reach it 
    `SmallTV-Setup-12ab34`. The screen also shows the name (if it stays black, the access point still works).
 4. Open **`http://192.168.4.1/`** and log in with **`admin` / `kapifo`**. The page is in Spanish (see step 6).
 5. On that page, join your home Wi-Fi (*Conectar a tu Wi-Fi* → *Buscar redes* → *Conectar y guardar*). The device comes back on your network (usually at the same address; the
-   page shows it) and keeps its access point too. You can skip this and do step 6 from the access point.
+   page shows it) and keeps its access point too. Do not skip it: the application needs your Wi-Fi. Without it,
+   it starts in rescue mode (*RESCUE: NO NETWORK*) shortly after booting; set the Wi-Fi from that page and it goes
+   back to the application by itself two minutes after joining ([docs/04-recovery.md](docs/04-recovery.md#how-to-leave-it)).
 
 **B. Application** → full guide: [docs/02-install-firmware.md](docs/02-install-firmware.md)
 
@@ -120,6 +125,7 @@ Wi-Fi, so after the restart **nothing answers at the old address**. To reach it 
 
 | Document | What it covers |
 |---|---|
+| [docs/00-introduction.md](docs/00-introduction.md) | Start here: what the device is, your options, first steps, and instructions for AI assistants |
 | [docs/01-jailbreak.md](docs/01-jailbreak.md) | Getting from the factory firmware to the bridge image |
 | [docs/02-install-firmware.md](docs/02-install-firmware.md) | Installing and updating the application and the resource pack |
 | [docs/03-features.md](docs/03-features.md) | What the firmware does |

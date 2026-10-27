@@ -25,8 +25,8 @@ built-in web updater; if the device does not boot, you need to open it and use a
 
 Rows are objects: `{"text": "..."}`, `{"type": "big", "text": "...", "tone": "accent"}`,
 `{"type": "key_value", "label": "CPU", "value": "12 %"}`, `{"type": "bar", "percent": 71, "text": "disk"}`.
-Tones are `normal`, `accent` and `alert`. About 28 characters fit per row; the device fonts draw Latin letters
-only, so emoji and other scripts become `?`.
+Tones are `normal`, `accent` and `alert`. About 28 characters fit per row; the device fonts draw printable ASCII
+plus the Spanish accented letters, so anything else (emoji, other accents, other scripts) becomes `?`.
 
 Every argument is checked by the server: an unknown argument or a bad value is an error, never silently ignored.
 In rescue mode the panel and settings tools answer that the device is in rescue mode (HTTP 404); during a firmware

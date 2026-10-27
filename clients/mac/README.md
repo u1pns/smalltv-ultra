@@ -58,7 +58,7 @@ sh status.sh
 sh update-firmware.sh smalltv-ultra-v0.6.10.bin
 
 # Fonts and icons in one go (skips what is already there; run it again if it stops halfway)
-sh upload-resources.sh smalltv-resources.res
+sh upload-resources.sh smalltv-ultra-resources.res
 
 # A message that pops up for 15 seconds
 sh send-panel.sh --title Home --big "Dinner ready" "Come down" --seconds 15

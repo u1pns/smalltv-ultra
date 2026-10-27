@@ -28,7 +28,7 @@
 
 | Symptom | Most likely cause and what to do |
 |---|---|
-| The device booted into rescue mode on its own | It restarted several times without reaching a stable state (for example after a few quick power cuts, or several updates in a row). Leave rescue mode from the web page, or upload a working firmware. If it stays healthy for 10 minutes, the next power-on tries the application again |
+| The device booted into rescue mode on its own | It restarted several times without reaching a stable state (for example after a few quick power cuts, or several updates in a row). Leave rescue mode from the web page, or upload a working firmware. It also goes back to the application by itself after 2 or 10 minutes, depending on why it entered ([04-recovery.md](04-recovery.md#how-to-leave-it)) |
 | Three power cuts did not enter rescue mode | Each start must last long enough to actually boot (a few seconds) and less than 60 seconds. Try again |
 | Nothing works: no access point, no web page | The image does not boot. This cannot be fixed over Wi-Fi: it needs a UART adapter. See [04-recovery.md](04-recovery.md) |
 

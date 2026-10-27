@@ -3,7 +3,7 @@
 Prerequisite: the device is running the bridge ([01-jailbreak.md](01-jailbreak.md)), or an earlier version of
 this application.
 
-A release folder in [`../firmware/`](../firmware/) (currently [`v0.6.7`](../firmware/v0.6.7/)) contains:
+The latest release folder in [`../firmware/`](../firmware/) (see [`../firmware/README.md`](../firmware/README.md)) contains:
 
 | File | What it is |
 |---|---|
